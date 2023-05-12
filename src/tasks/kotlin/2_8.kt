@@ -8,6 +8,7 @@ fun main() {
     var endMessage = "Bye!"
     var shouldPrintProduct = false
 
+
     while (!exit){
         val input: List<String> = readLine()!!.split(" ").map { it.trim()}
         var product = 0
@@ -29,6 +30,7 @@ fun main() {
                 shouldPrintProduct = true
             }
             else {
+                println()
                 shouldPrintProduct = false
                 break
             }

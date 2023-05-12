@@ -1,58 +1,48 @@
-// The program must calculate expressions like these: 4 + 6 - 8, 2 - 3 - 4, and so on.
-// Modify the result of the /help command to explain these operations.
-// Decompose your program using functions to make it easy to understand and edit later.
-// The program should not stop until the user enters the /exit command.
-// If you encounter an empty line, do not output anything.
-
 package calculator
 
-// fun sum() {}
+import java.lang.NumberFormatException
 
-// fun sub() {}
-
-// fun 
-
+/* fun getFactor(signString: String): Int {
+    return if (signString.filter { it == '-' }.length % 2 == 0) {1} else -1
+} */
 
 fun main() {
-    var safe_word = "/exit"
-    var helpWord = "/help"
-    var exit = false
-    var helpMessage = "The program calculates the sum of numbers"
-    var endMessage = "Bye!"
-    var shouldPrintProduct = false
+    val SAFE_WORD = "/exit"
+    val HELP_WORD = "/help"
+    val HELP_MESSAGE = "The program calculates the sum of numbers. It can also handle + and -."
+    val END_MESSAGE = "Bye!"
 
-    while (!exit){
-        val input: List<String> = readLine()!!.split(" ").filter { it != null && !it.isNullOrBlank() }.map { it.trim() }
-        // input.removeAll(listOf(null))
-        println(input)
+    loop@ while (true) {
+        val input: List<String> = readln().split(" ").filter { it != null && !it.isNullOrBlank() }.map { it.trim() }
+        if (input.isEmpty()) {continue@loop}
         var product = 0
+        var i = 0
+        while (i <= input.size -1) {
+            when (input[i].lowercase()) {
+                SAFE_WORD -> {
+                    break@loop
+                }
 
-        for (value in input){
-            if (value.equals(safe_word, ignoreCase = false)) {
-                shouldPrintProduct = false
-                exit = true
-                println(endMessage)
-                break
-            }
-            else if (value.equals(helpWord, ignoreCase = false)) {
-                shouldPrintProduct = false
-                println(helpMessage)
-                break
-            }
-            else if (value.toIntOrNull() != null) {
-                product += value.toInt()
-                shouldPrintProduct = true
-            }
-            else {
-                shouldPrintProduct = false
-                break
+                HELP_WORD -> {
+                    println(HELP_MESSAGE)
+                    continue@loop
+                }
+                else -> {
+                    var (summand: Int, ind: Int) = try {
+                        Pair(input[i].toInt(), i)
+                    } catch (e: NumberFormatException) {
+                        Pair(input[i + 1].toInt() * getFactor(input[i]), i + 1)
+                    }
+                    i = ind +1
+                    product += summand
+                }
             }
         }
-        if (shouldPrintProduct) {
-            println(product)
-        }
+        println(product)
     }
+    println(END_MESSAGE)
 }
+
 
 /*
 package calculator
