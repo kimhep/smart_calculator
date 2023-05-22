@@ -2,11 +2,11 @@ package calculator
 
 import java.lang.NumberFormatException
 
-/* fun getFactor(signString: String): Int {
-    return if (signString.filter { it == '-' }.length % 2 == 0) {1} else -1
-} */
+fun getFactor(signString: String): String {
+    return if (signString.filter { it == '-' }.length % 2 == 0) {"+"} else "-"
+}
 
-fun main() {
+/* fun main() {
     val SAFE_WORD = "/exit"
     val HELP_WORD = "/help"
     val HELP_MESSAGE = "The program calculates the sum of numbers. It can also handle + and -."

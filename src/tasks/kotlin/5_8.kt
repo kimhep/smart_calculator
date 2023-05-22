@@ -2,8 +2,37 @@ package calculator
 
 import java.lang.NumberFormatException
 
-fun getFactor(signString: String): Int {
-    return if (signString.filter { it == '-' }.length % 2 == 0) {1} else -1
+fun checkOccurrences(string: String): Boolean {
+    val plusMinusCount = Regex("[+-]").findAll(string).count()
+    val digitCount = string.replace("+", " ").replace("-", " ").split(" ").size
+    return plusMinusCount == digitCount - 1
+}
+
+fun parseInput(input: String): String {
+    var positive = true
+    var lastCharInt = false
+    var tempIntStr = ""
+    for (char in input) {
+        if (char.digitToIntOrNull() != null) {
+            if (lastCharInt) {
+                tempIntStr += char
+            }
+            else {
+                tempIntStr += if (positive) " $char" else (" -$char")
+                positive = true
+            }
+            lastCharInt = true
+        }
+        else if (char == '-') {
+            lastCharInt = false
+            positive = !positive
+        }
+        else if (char == '+') {
+            lastCharInt = false
+            positive = true
+        }
+    }
+    return tempIntStr
 }
 
 fun main() {
@@ -11,45 +40,23 @@ fun main() {
     val HELP_WORD = "/help"
     val HELP_MESSAGE = "The program calculates the sum of numbers. It can also handle + and -."
     val END_MESSAGE = "Bye!"
-    val illegalValues = Regex("[0-9+-]+")
-    val signs = Regex(".*([+-])\$")
+    val UNKNOWN_CMD = "Unknown command"
+    val invalidExpression = "Invalid expression"
+    val validString = Regex("^[-+\\d\\s]*\$")
 
-    loop@ while (true) {
-        val input: List<String> = readln().split(" ").filter { it != null && !it.isNullOrBlank() }.map { it.trim() }
-        if (input.isEmpty()) {continue@loop}
-        var product = 0
-        var i = 0
-            while (i <= input.size -1) {
-            when (input[i].lowercase()) {
-                SAFE_WORD -> {
-                    break@loop
-                }
-
-                HELP_WORD -> {
-                    println(HELP_MESSAGE)
-                    continue@loop
-                }
-                else -> {
-                    when {
-                        (signs.matches(input[i]) && i == input.size-1 || !illegalValues.matches(input[i])) -> {
-                            println("Input string is not allowed.")
-                            continue@loop
-                        }
-                        ()
-                        else -> {
-                            var (summand: Int, ind: Int) = try {
-                                Pair(input[i].toInt(), i)
-                            } catch (e: NumberFormatException) {
-                                Pair(input[i + 1].toInt() * getFactor(input[i]), i + 1)
-                            }
-                            i = ind +1
-                            product += summand
-                            }
-                        }
-                    }
+    while (true) {
+        val action = readln().replace(" ", "").replace("[", "").replace("]", "")
+        when {
+            action.isEmpty() -> continue
+            action.startsWith(SAFE_WORD) -> break
+            action.startsWith(HELP_WORD) -> println(HELP_MESSAGE)
+            action.startsWith("/") -> println(UNKNOWN_CMD)
+            !validString.matches(action) || action.endsWith("+") || action.endsWith("-") || !checkOccurrences(action) -> println(invalidExpression)
+            else -> {
+                val parsedAction = parseInput(action)
+                println(parsedAction.trim().split(" ").sumOf { it.toInt() })
                 }
             }
-        println(product)
         }
     println(END_MESSAGE)
 }
