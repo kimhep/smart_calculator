@@ -2,7 +2,7 @@ package calculator
 
 import java.lang.NumberFormatException
 
-fun checkOccurrences(string: String): Boolean {
+ /* fun checkOccurrences(string: String): Boolean {
     val plusMinusCount = Regex("[+-]").findAll(string).count()
     val digitCount = string.replace("+", " ").replace("-", " ").split(" ").size
     return plusMinusCount == digitCount - 1
@@ -33,8 +33,8 @@ fun parseInput(input: String): String {
         }
     }
     return tempIntStr
-}
-
+} */
+/*
 fun main() {
     val SAFE_WORD = "/exit"
     val HELP_WORD = "/help"
@@ -60,3 +60,4 @@ fun main() {
         }
     println(END_MESSAGE)
 }
+*/
